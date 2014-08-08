@@ -13,3 +13,15 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+/tmp/**/*
+/doc/api
+/doc/app
+*.swp
+
+#Ignore the system file
+*.DS_Store
+
+#ignore the sublime project files
+/la_corsa.sublime-project
+/la_corsa.sublime-workspace
