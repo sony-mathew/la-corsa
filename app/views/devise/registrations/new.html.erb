@@ -6,6 +6,15 @@
   <div><%= f.label :email %><br />
   <%= f.email_field :email, autofocus: true %></div>
 
+  <div><%= f.label :name %><br />
+  <%= f.text_field :name %></div>
+
+  <div><%= f.label :nick_name %><br />
+  <%= f.text_field :nickname %></div>
+
+  <div><%= f.label :dob %><br/>
+  <input type="date" name="user[dob]"> </div>
+
   <div><%= f.label :password %><br />
     <%= f.password_field :password, autocomplete: "off" %></div>
 

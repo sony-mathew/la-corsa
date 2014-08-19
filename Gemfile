@@ -41,4 +41,9 @@ gem 'devise'
 
 #gem 'activerecord-mysql-adapter’
 
-gem 'activerecord-mysql2-adapter'
+gem 'mysql2'
+
+
+group :development do	gem 'rspec-rails', '2.0.1' 
+	gem 'annotate'end
+
