@@ -1,0 +1,107 @@
+header {
+	width: 100%;
+	/*opacity: 0.9;*/
+}
+
+nav {
+	padding: 0% 12%;
+}
+nav .navbar .navbar-default {
+	background: lightgrey;
+}
+.container {
+	/*padding: 0% 9%;*/
+	background: white;
+	opacity: 0.95;
+	border-radius: 10px;
+	margin:auto;
+	width: 76.5%;
+	padding: 20px;
+	height: 100%;
+	border: 1px solid lightgrey;
+}
+/*
+.sub-nav-bar {
+	margin: 0% 10%;
+} */
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    width: 100%;
+    padding: 0% 12%;
+    background: lightgrey;
+    opacity: 0.9;
+    padding-top: 20px;
+}
+
+.course-row {
+	overflow: hidden;
+	font-size: 16px;
+}
+
+.course-row:hover {
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	background-color: #e7e7e7;
+}
+
+.course-row .col-md-1, .course-row .col-md-10 ,.course-row .col-md-2 ,.course-row .col-md-6 {
+	padding: 10px;
+}
+
+.course-row .col-md-1:last-child{
+	text-align: center;
+	border-radius-top-right: 5px; 
+	color: white;
+}
+
+a .course-row {
+	text-transform: none;
+	text-decoration: none;
+	text-indent: none;
+	color: black;
+}
+
+.navbar-header .navbar-brand {
+	color: teal;
+	font-weight: 300;
+	font-size: 25px;
+}
+.container .home h1, .container .home h2 {
+	font-size: 40px;
+	font-weight: 100;
+}
+
+.container .home p {
+	font-size: 16px;
+	font-weight: 200;
+}
+
+.row {
+	text-align: justify;
+}
+
+.signin {
+	padding: 10px;
+	padding-left: 40px;
+	border-left: 1px solid lightgrey;
+	font-weight: 300;
+}
+
+.signin_font, .signin_font h2, .signin_font label {
+	font-weight: 300;
+}
+.signup .row {
+	margin-top: 15px;
+}
+
+.signup {
+	margin-left: 25px;
+}
+
+.right_of_signup {
+	margin-top: 70px;
+}

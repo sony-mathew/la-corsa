@@ -44,6 +44,11 @@ gem 'devise'
 gem 'mysql2'
 
 
-group :development do	gem 'rspec-rails', '2.0.1' 
-	gem 'annotate'end
+group :development do
+	gem 'rspec-rails', '2.0.1' 
+	gem 'annotate'
+end
+
+
+gem 'rails_12factor', group: :production
 

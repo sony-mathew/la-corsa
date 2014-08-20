@@ -1,27 +1,68 @@
-<h2>Sign up</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
+<div class="row signin_font">
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, autofocus: true %></div>
+  <div class="col-md-8">
+  <h2>Sign up</h2>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <div class="signup">
 
-  <div><%= f.label :name %><br />
-  <%= f.text_field :name %></div>
+        <div class="row">  
+            <div class="col-md-8 alert alert-danger">
+                <%= devise_error_messages! %>
+            </div>
+        </div>  
 
-  <div><%= f.label :nick_name %><br />
-  <%= f.text_field :nickname %></div>
+        <div class="clearfix"></div>
 
-  <div><%= f.label :dob %><br/>
-  <input type="date" name="user[dob]"> </div>
+        <div class="row">
+          <div class="col-md-4"><%= f.label :email %> </div>
+          <div class="col-md-7"> <%= f.email_field :email, autofocus: true %></div>
+        </div>  
 
-  <div><%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %></div>
+        <div class="clearfix"></div>
 
-  <div><%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+        <div class="row">
+            <div class="col-md-4"><%= f.label :name %></div>
+            <div class="col-md-7"><%= f.text_field :name %></div>
+        </div>
 
-  <div><%= f.submit "Sign up" %></div>
-<% end %>
+        <div class="row">
+            <div class="col-md-4"> <%= f.label :nick_name %></div>
+            <div class="col-md-7"><%= f.text_field :nickname %></div>
+        </div>
 
-<%= render "devise/shared/links" %>
+
+        <div class="row">
+            <div class="col-md-4"><%= f.label :dob %></div>
+            <div class="col-md-7"><input type="date" name="user[dob]"> </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4"><%= f.label :password %> </div>
+            <div class="col-md-7"><%= f.password_field :password, autocomplete: "off" %></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4"><%= f.label :password_confirmation %></div>
+            <div class="col-md-7"><%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-7"> <%= f.submit "Sign up", :class => "btn btn-info" %> </div>
+        </div>
+
+      </div>  
+    <% end %>
+  </div>    
+
+  <div class="col-md-4 right_of_signup">
+    <div class="row">
+      <div class="col-md-8">
+          Already a member? Sign in here. <%= render "devise/shared/links" %>
+      </div>    
+    </div>
+  </div>  
+
+</div>
+
