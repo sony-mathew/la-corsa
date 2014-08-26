@@ -1,0 +1,12 @@
+
+<%= render 'shared/sub_menu' %>
+
+<% if @message %>
+	<div class="alert alert-success" role="alert"> <%= @message %> </div>
+<% end %>
+
+<div class="courses">
+	<%= render @courses %>
+</div>
+
+<%= will_paginate @courses %> 

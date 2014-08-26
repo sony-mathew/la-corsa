@@ -6,6 +6,7 @@
 		<%= render 'layouts/stylesheets' %>
 		<%= javascript_include_tag 'jquery.min' %>
 		<%= javascript_include_tag 'bootstrap' %>
+		<%= javascript_include_tag 'application' %>
   	</head>
   	
   	<body>
@@ -15,11 +16,12 @@
 		<div class="container"> 	
 
 				<%= yield %> 
-				
+			
     	</div>
 
 		<%= render 'layouts/footer' %>
-
+		
+		<%= javascript_include_tag 'custom' %>
   	</body>
 
 </html>

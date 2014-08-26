@@ -1,0 +1,49 @@
+
+<%= render 'shared/sub_menu' %>
+
+	<%= will_paginate %>
+
+		<div class="study_materials">
+			<% if @message %>
+				<div class="alert alert-success" role="alert"> <%= @message %> </div>
+			<% end %>
+
+			<!-- For showing the index correctly -->
+			<% if params[:page].nil? || params[:page] == "0" || params[:page] == "1" %>
+			  	<% x = 0 %>
+			<% else %>
+			  	<% page = params[:page].to_i - 1 %>
+			  	<% x = page * 15 %>
+			<% end %>
+			<!-- end of the index calculation -->
+
+			<table class="table table-hover table-bordered">
+				<tr>
+					<th>#</th>
+					<th>Title</th>
+					<th>Link</th>
+					<% if @user_materials_flag %>
+						<th> Update </th> 
+					<% end %>	
+				</tr>
+
+				<% @study_materials.each_with_index do |study_material, index| %>
+
+					<tr>
+						<td> <%= index + 1 + x %> </td>
+						<td> <%= link_to study_material.title, study_material  %> </td>
+						<td> <%= link_to "", study_material.link, :class => "glyphicon glyphicon-link", :target => "_blank" %> </td>
+
+						<% if current_user.id == study_material.user_id and @user_materials_flag %> 
+							<td>
+								<%= link_to "", edit_user_study_material_path(current_user,study_material), :title => study_material.title, :class => "glyphicon glyphicon-edit edit_delete_space" %> 
+								<%= link_to "", user_study_material_path(current_user,study_material), :method => :delete, :confirm => "You sure?",:title => study_material.title, :class => "glyphicon glyphicon-trash" %>
+							</td>
+						<% end %> 
+
+					</tr>
+				<% end %>
+			</table>	
+		</div>
+
+	<%= will_paginate %>

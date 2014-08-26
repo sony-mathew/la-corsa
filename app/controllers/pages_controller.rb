@@ -4,6 +4,8 @@ class PagesController < ApplicationController
     @user = User.new
     if user_signed_in? 
       @title = "Welcome " + current_user.name
+      @nav_active = 'c'
+      render 'users/dashboard'
     end 
   end
 
@@ -11,12 +13,5 @@ class PagesController < ApplicationController
   	@title = "Contact"
   end
 
-  def about
-  	@title = "About"
-  end
-
-  def help
-  	@title = "Help"
-  end
   
 end

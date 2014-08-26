@@ -1,0 +1,35 @@
+
+<% panel_class = "default" %>
+
+
+<% if (@course_flag and @learning_process[0].status != "COMPLETED") %>
+  <% panel_class = @counter < @learning_process[0].last_material ? "info" : ( @counter == @learning_process[0].last_material ? "success" : "default") %> 
+  <% @counter = @counter + 1 %>
+<% end %>
+
+<div class="show-study-material">
+    <div class="panel panel-<%= panel_class %>">
+        <div class="panel-heading">
+            <h3 class="panel-title"> 
+      	         <%= study_material.title %> 
+      	         <a href="<%= study_material.link %>" class="glyphicon glyphicon-link pull-right" target="_blank"></a>
+            </h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+      	         <div class="col-md-8"> 
+      		            <%= study_material.description %>
+      	         </div>
+      	         <div class="col-md-4 right-column-common"> 
+      		          Click here to go to the resource. &nbsp;&nbsp;
+      		          <a href="<%= study_material.link %>" class="btn btn-info" target="_blank"> Link </a>
+                    <% if ((@course_flag and !(@learning_process[0].status == "COMPLETED" or @learning_process[0].status == "DROPPED")) and @learning_process[0].last_material == (@counter-1)) %>
+                      <br/><br/>
+                      <button type="button" class="btn btn-success finished-material" data-lp="<%= @learning_process[0].id %>">I have finished this material</button>
+                    <% end %>
+                 </div>   
+      	     </div>
+        </div>
+    </div>
+</div>

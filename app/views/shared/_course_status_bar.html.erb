@@ -1,0 +1,43 @@
+
+<div class="course-status-bar">
+	<div class="panel panel-default">
+		
+		<div class="row">
+			<div class="col-md-4">
+				<% lp = @course.learning_processes.where("student = "+current_user.id.to_s) %>
+				<% if !lp.empty? %>
+					<% if (lp[0].status == "ON" or lp[0].status == "SUGGESTED") %>
+						<span class="text">Completion Status &nbsp;&nbsp;&nbsp;</span>
+						<span class="status"> 
+							<% per = ((lp[0].last_material.to_f/@course.course_materials_count).round(2)*100).to_i %>
+							<%= per == 0 ? '&nbsp;'.html_safe+per.to_s : per %> %
+						</span>	
+					<% else %>
+						<% alert_type = (lp[0].status.include? "DROPPED") ? "alert-danger" : "alert-success"  %>
+						<div class="alert <%= alert_type %>"> You have <%= lp[0].status %> this course. </div>	
+					<% end %>	 
+				<% else %>
+					<button type="button" class="btn btn-success enroll-me" data-course="<%= @course.id %>">Enroll me for this course</button>
+				<% end %>	
+			</div>
+			<div class="col-md-2">
+				<% if !lp.empty? %>
+					<% if (lp[0].status == "ON" or lp[0].status == "SUGGESTED") %>
+						<button type="button" class="btn btn-danger drop-course" data-lp="<%= lp[0].id %>">Drop course</button>
+					<% elsif lp[0].status == "DROPPED" %>
+						<button type="button" class="btn btn-success activate-course" data-lp="<%= lp[0].id %>">Activate course</button>
+					<% end %>
+				<% end %>	
+			</div>
+			<div class="col-md-6">
+				<span class="suggest-get"> 
+						<input type="text" name="suggest" placeholder="Comma seperated emails" class="suggest-input" data-course="<%= @course.id %>">
+				</span>
+				<span>
+					<button type="button" class="btn btn-success suggest">Suggest to friends</button>
+				</span>
+			</div>
+		</div>
+			
+	</div>	
+</div>

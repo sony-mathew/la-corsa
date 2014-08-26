@@ -1,0 +1,105 @@
+
+<%= render 'shared/sub_menu' %>
+
+
+<div class="row">
+
+	<div class="col-md-6">
+
+		<div class="add_new_course">
+			
+			<% heading = "Edit Course" %>
+			<% study_material_ids = "" %>
+			
+			<% if @study_materials.nil? %>
+				<% heading = "Add a New Course" %>
+			<% else %>
+				<% @study_materials.each do |study_material| %>
+					<% study_material_ids += study_material.id.to_s + "," %>
+				<% end %>
+			<% end %>
+
+
+			<h4><%= heading %></h4>
+			<br/>
+			
+			<% if @message %>
+				<% alert_type = (@message.include? "success") ? "alert-success" : "alert-danger" %>
+				<div class="alert <%= alert_type %>"> 
+					<%= @message %> 
+				</div>
+			<% end %>				
+
+			<%= form_for(@course) do |f| %>
+
+				<%= render 'shared/error_messages', :object => f.object %>
+			  
+			  	<div class="row">
+					<div class="col-md-3"><%= f.label :name %> </div>
+			  		<div class="col-md-6"><%= f.text_field :name, :class => "name" %></div>
+			  	</div>
+			  	
+			  	<div class="row">	
+			  		<div class="col-md-3"><%= f.label :description %></div>
+			    	<div class="col-md-6"><%= f.text_area :description, :class => "studyText" %></div>
+			    </div>
+
+
+
+			    <input type="hidden" value="<%= study_material_ids %>" id="material_ids" name="material_ids">
+
+				<div class="row">
+					<div class="col-md-8"></div>	
+			  		<div class="col-md-3"><%= f.submit "Submit",:class => "btn btn-success" %></div>
+			  	</div>
+
+			<% end %>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<h4>Added Study Materials</h4>
+			    <br/>
+
+	    <ul class="list-group added-materials">
+
+	    	<% if @study_materials.nil? %>
+				<div class="alert alert-warning" role="alert">No study Materials added. Search in search bar below this pane and add materials to this course.</div>
+			<% else %>
+				<% @study_materials.each_with_index do |study_material, index| %>
+					<li class="list-group-item study-material-id-<%= study_material.id %>">
+						<div class="row">
+							<!--<div class="col-md-1">
+								<%= index + 1 %>
+							</div> -->
+							<div class="col-md-10">
+								<%= study_material.title %>
+							</div>
+							<div class="col-md-1">
+								<span class="glyphicon glyphicon-remove remove-material" data-material="<%= study_material.id %>"> </span>
+							</div>
+						</div>
+					</li>
+				<% end %>
+			<% end %>
+
+		</ul>
+		<div class="materials">
+			<div class="row">
+				<div class="col-md-3 searcher">
+					 Search &nbsp;&nbsp;
+					 <span class="glyphicon glyphicon-search"> </span>
+				</div>
+				<div class="col-md-8">
+					<form action="" method="post">
+						<input type="text" name="search" class="search" onkeyup="searchFunction()" placeholder="Search Study Materials">
+					</form>
+				</div>
+			</div>
+			<ul class="list-group searchresults">
+				  <li class="list-group-item">
+				  	Type atleast 3 characters and we will list the matching results.</li>
+			</ul>
+		</div>
+	</div>
+</div>

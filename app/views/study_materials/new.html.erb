@@ -1,0 +1,44 @@
+
+<%= render 'shared/sub_menu' %>
+
+<div class="add-new-study-material">
+	<h4>Add new Study Material</h4>
+	<br />
+	<% if @message %>
+		<div class="row msg">
+			<% alert_type = (@message.include? "success") ? "alert-success" : "alert-danger" %>
+			<div class="col-md-6 alert <%= alert_type %>"> 
+				<%= @message %> 
+			</div>
+		</div>	
+	<% end %>
+
+
+	<%= form_for(@study_material) do |f| %>
+
+	  	<%= render 'shared/error_messages', :object => f.object %>
+
+	  	<div class="row">
+			<div class="col-md-2"> <%= f.label :title %> </div>
+	  		<div class="col-md-6"> <%= f.text_field :title %></div>
+	  	</div>
+
+
+	  	<div class="row">
+			<div class="col-md-2"> <%= f.label :description %> </div>
+	  		<div class="col-md-6"> <%= f.text_area :description, :class => "studyText" %></div>
+	  	</div>
+
+	  	<div class="row">
+			<div class="col-md-2"> <%= f.label :link %></div>
+	  		<div class="col-md-6"> <%= f.text_field :link %></div>
+	  	</div>
+
+
+	  	<div class="row">
+			<div class="col-md-2"> </div>
+	  		<div class="col-md-6"> <%= f.submit "Submit",:class => "btn btn-success" %></div>
+	  	</div>
+
+	<% end %>
+</div>

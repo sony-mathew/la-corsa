@@ -52,3 +52,7 @@ end
 
 gem 'rails_12factor', group: :production
 
+
+#For paginating
+gem 'will_paginate', '~> 3.0'
+

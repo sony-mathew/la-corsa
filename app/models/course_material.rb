@@ -1,8 +1,12 @@
 class CourseMaterial < ActiveRecord::Base
-  
-  belongs_to :courses
-  belongs_to :study_materials
+	
+	belongs_to 	:study_material
+	belongs_to 	:course
 
-  attr_accessible :course_id, :order, :study_material_id
-  
+	default_scope :order => 'course_materials.order ASC'
+
+	validates :course_id, :presence => true
+	validates :study_material_id, :presence => true
+	validates :order, :presence => true
+
 end

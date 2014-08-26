@@ -1,0 +1,28 @@
+<%= render 'shared/sub_menu' %>
+
+<% if !@courses.empty? %>
+	<%= will_paginate @courses %>
+		<table class="table table-hover table-bordered">
+			<tr>
+				<th> # </th>
+				<th> Course Name </th>
+				<th> Completion </th>
+				<th> Mentor </th>
+				<th> Status </th>
+			</tr>
+			<% @courses.each_with_index do |s, index| %>
+				<tr>
+					<td> <%= index+1 %> </td>
+					<td> 
+						<%= link_to s.course.name, course_path(s.course) %>
+					</td>
+					<td> <%= ((s.last_material.to_f/s.course.course_materials_count).round(2)*100).to_i %> %</td>
+					<td> <%= s.mentor.name %></td>
+					<td> <%= s.status %> </td>
+				</tr>
+			<% end %>
+		</table>
+	<%= will_paginate @courses %>			
+<% else %>
+	<div class="alert alert-info"> You don't have any <%= params[:status] %> courses. </div>
+<% end %>

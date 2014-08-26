@@ -4,8 +4,32 @@ LaCorsa::Application.routes.draw do
   match '/contact', :to => 'pages#contact'
   match '/about',   :to => 'pages#about'
   match '/help',    :to => 'pages#help'
+
+  match '/searchCourses',    :to => 'courses#search'
   root :to => 'pages#home'
 
+  
+  #resources :courses
+
+  resources :users do
+    resources :study_materials
+    resources :courses #do
+    #   resources :course_materials
+    # end
+    # resources :learning_processes
+  end
+
+  resources :study_materials
+  resources :courses
+
+  match '/users/:id/students',    :to => 'learning_processes#students'
+  match '/users/:id/courses/enrolled/:status', :to => 'learning_processes#courses'
+
+  match '/drop-course',    :to => 'learning_processes#drop_course'
+  match '/activate-course',    :to => 'learning_processes#activate_course'
+  match '/enroll-me',    :to => 'learning_processes#enroll_me'
+  match '/finished-material',    :to => 'learning_processes#finished_material'
+  match '/suggest',    :to => 'learning_processes#suggest_course'
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
