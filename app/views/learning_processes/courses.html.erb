@@ -17,8 +17,8 @@
 						<%= link_to s.course.name, course_path(s.course) %>
 					</td>
 					<td> <%= ((s.last_material.to_f/s.course.course_materials_count).round(2)*100).to_i %> %</td>
-					<td> <%= s.mentor.name %></td>
-					<td> <%= s.status %> </td>
+					<td> <%= s.mentor.id == current_user.id ? "-" : s.mentor.name  %></td>
+					<td> <%= s.status_name %> </td>
 				</tr>
 			<% end %>
 		</table>

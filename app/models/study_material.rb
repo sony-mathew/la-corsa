@@ -13,6 +13,4 @@ class StudyMaterial < ActiveRecord::Base
 
   	#default_scope :order => 'study_materials.created_at DESC'
 
-  	
-
 end

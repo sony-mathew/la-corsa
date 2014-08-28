@@ -13,21 +13,18 @@
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      
 		      <ul class="nav navbar-nav navbar-right">
-		        <li class="<%= @nav_active %>ctive"><%= link_to "Open Courses", courses_path %></li>
-		        
-		        <% if !user_signed_in? %>
-		        	<li><%= link_to "About", about_path %></li>
-		        <% end %>
 		        
 		        <% if user_signed_in? %>
-		        	<li class="a<%= @nav_active %>tive">
+		        	<li class="<%= :active if @open_courses_tab %>"><%= link_to "Open Courses", "/courses/filter/open" %></li>
+
+		        	<li class="<%= :active if @dashboard_tab %>">
 		        		<%= link_to "Dashboard", root_path %>
 		        	</li>
-		        	<li class="ac<%= @nav_active %>ive">
-		        		<a href="/users/<%= current_user.id %>/courses/enrolled/current"> Learn </a>
+		        	<li class="<%= :active if @learn_tab %>">
+		        		<a href="/courses/enrolled/current"> Learn </a>
 		        	</li>
-		        	<li class="act<%= @nav_active %>ve">
-		        		<a href="/users/<%= current_user.id %>/students">Teach</a>
+		        	<li class="<%= :active if @teach_tab %>">
+		        		<a href="/students">Teach</a>
 		        	</li>
 		        	<li class="dropdown">
 			          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -41,6 +38,7 @@
 			          </ul>
 			        </li>
 		        <% else %>
+		        	<li><%= link_to "About", about_path %></li>
 		        	<li><%= link_to "Sign Up", new_user_registration_path %></li>
 		        <% end %>
 

@@ -22,7 +22,7 @@ function searchFunction() {
 	if ( str.length > 2) {
 
 		//sending ajax request
-		xmlhttp.open("GET","/searchCourses?search="+str,false);
+		xmlhttp.open("GET","/study_materials/search?search="+str,false);
 		xmlhttp.send();
 
 		//getting the response as json and parsing it
@@ -186,7 +186,12 @@ function addEventListnersz() {
 	$('.enroll-me').click( function() { enrollMe(this); });
 	$('.finished-material').click( function() { finishedCurrentMaterial(this); });
 	$('.suggest').click( function() { suggestCourse(this); });
+	$('.rate-button').click( function() { rating(); });
 
+	$( "#target" ).submit(function( event ) {
+  		suggestCourse(event);
+  		return false;
+	});
 	// $('.remove-material').forEach(function(value){
 	// 	$(value).click( function() { removeMaterial(this); });
 	// });
@@ -206,7 +211,7 @@ function dropCourse(element) {
 	
 	var lpId = element.getAttribute("data-lp");
 	//sending ajax request
-	xmlhttp.open("GET","/drop-course?lp_id="+lpId,false);
+	xmlhttp.open("GET","/learning_processes/drop_course?lp_id="+lpId,false);
 	xmlhttp.send();
 	if ( xmlhttp.responseText == "Success"){
 			msg = "Successfully dropped the course.";
@@ -222,7 +227,7 @@ function dropCourse(element) {
 function activateCourse(element) {
 	var lpId = element.getAttribute("data-lp");
 	//sending ajax request
-	xmlhttp.open("GET","/activate-course?lp_id="+lpId,false);
+	xmlhttp.open("GET","/learning_processes/activate_course?lp_id="+lpId,false);
 	xmlhttp.send();
 	if ( xmlhttp.responseText == "Success") {
 			msg = "Successfully activated the course.";
@@ -238,7 +243,7 @@ function activateCourse(element) {
 function enrollMe(element) {
 	var courseId = element.getAttribute("data-course");
 	//sending ajax request
-	xmlhttp.open("GET","/enroll-me?course_id="+courseId,false);
+	xmlhttp.open("GET","/learning_processes/enroll_me?course_id="+courseId,false);
 	xmlhttp.send();
 	if ( xmlhttp.responseText == "Success") {
 			msg = "Successfully enrolled for the course.";
@@ -254,7 +259,7 @@ function enrollMe(element) {
 function finishedCurrentMaterial(element) {
 	var lpId = element.getAttribute("data-lp");
 	//sending ajax request
-	xmlhttp.open("GET","/finished-material?lp_id="+lpId,false);
+	xmlhttp.open("GET","/learning_processes/finished_material?lp_id="+lpId,false);
 	xmlhttp.send();
 	if ( xmlhttp.responseText == "Success") {
 			reload();
@@ -262,7 +267,7 @@ function finishedCurrentMaterial(element) {
 			msg = "Could not update that request of you finishing the current study material.";
 			dspCourseMsg(msg);
 	}	
-	console.log("in finishedCurrentMaterial course." + lpId);
+	console.log("in finishedCurrentMaterial course." + lpId + "## "+ xmlhttp.responseText);
 }
 
 function suggestCourse(element) {
@@ -274,7 +279,7 @@ function suggestCourse(element) {
 
 	emails.forEach(function(mail) {
 		if (IsEmail(mail)) {
-			xmlhttp.open("GET","/suggest?email="+mail+"&course="+courseId, false);
+			xmlhttp.open("GET","/learning_processes/suggest?email="+mail+"&course="+courseId, false);
 			xmlhttp.send();
 
 			if ( xmlhttp.responseText == "Success") {
@@ -301,15 +306,21 @@ function suggestCourse(element) {
 function reload() {
 	setTimeout(function(){
   					 location.reload(true);
-			}, 3000);
+			}, 1500);
 }
 
 function dspCourseMsg(msg){
-	alert_msg = document.createElement('div');
-	$(alert_msg).addClass("alert alert-info");
-	$(alert_msg).html(msg);
-	$(alert_msg).appendTo($(".course-status-bar"));
-	$(alert_msg).click( function(){ $(this).remove();});
+
+	if ($(".alert-info").length != 0 ){
+		$(".alert-info").html(msg);
+		$(".alert-info").click( function(){ $(".alert-info").remove();});
+	}else{
+		alert_msg = document.createElement('div');
+		$(alert_msg).addClass("alert alert-info");
+		$(alert_msg).html(msg);
+		$(alert_msg).appendTo($(".course-status-bar"));
+		$(alert_msg).click( function(){ $(this).remove();});	
+	}
 }
 
 function removeTrail(value, index, obj) {
@@ -343,4 +354,22 @@ function removeMaterial(element) {
 	}
 	console.log("remove the lement"+materials);
 	$(".study-material-id-"+materialId).remove();
+}
+
+function rating() {
+	var course = parseInt($(".rating-input").attr("data-course"));
+	var user_rating = parseInt($(".rating-input").val());
+	//return true;
+	xmlhttp.open("GET","/learning_processes/rate_course?rating="+user_rating+"&course="+course,false);
+	xmlhttp.send();
+	if ( xmlhttp.responseText == "Success") {
+			msg = "Successfully rated the course.";
+			dspCourseMsg(msg);
+			reload();
+	} else {
+			msg = "Could not rate the course."+xmlhttp.responseText;
+			dspCourseMsg(msg);
+	}	
+	console.log("in rate course. course: "+ course + " rating : " +user_rating);
+	//reload();
 }

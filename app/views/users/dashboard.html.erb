@@ -7,7 +7,7 @@
 </div>
 
 
-<% @courses = current_user.occurences_as_student.where("status = 'ON' or status ='SUGGESTED'").paginate(:page => params[:page], :per_page => 15) %>
+<% @courses = current_user.occurences_as_student.where("status = 2 or status = 3 ").paginate(:page => params[:page], :per_page => 15) %>
 
 <% if !@courses.empty? %>
 	<%= will_paginate @courses %>
@@ -26,8 +26,8 @@
 						<%= link_to s.course.name, course_path(s.course) %>
 					</td>
 					<td> <%= ((s.last_material.to_f/s.course.course_materials_count).round(2)*100).to_i %> %</td>
-					<td> <%= s.mentor.name %></td>
-					<td> <%= s.status %> </td>
+					<td> <%= s.mentor.id == current_user.id ? "-" : s.mentor.name %></td>
+					<td> <%= s.status_name %> </td>
 				</tr>
 			<% end %>
 		</table>

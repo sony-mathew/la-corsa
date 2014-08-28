@@ -192,16 +192,16 @@ a .course-row {
 }
 
 .courses .panel .row .col-md-7 a, .courses .panel .row .col-md-8 a {
-	color: black;
+	color: white;
 }
 .courses .panel .row .col-md-4 span, .courses .panel .row .col-md-5 span{
 	margin-left: 5px;
 	padding:10px;
 	font-weight: bold;
-	background: cadetblue; /*#2a6496**/
+	background: rgb(58, 58, 58); /*#2a6496**/
 	color: white;
 	border-radius: 3px;
-	font-size: 16px;
+	font-size: 12px;
 }
 .courses .panel .row .col-md-8 .sub , .courses .panel .row .col-md-7 .sub {
 	font-size: 13px;
@@ -209,7 +209,7 @@ a .course-row {
 }
 
 .courses .panel .panel-heading{
-	background: lightblue;
+	background: rgb(104, 191, 219);
 }
 
 .courses .panel .panel-body {
@@ -239,7 +239,7 @@ a .course-row {
 	height: 35px;
 }
 
-.course-status-bar .panel .row .col-md-4 .status {
+.course-status-bar .panel .row .col-md-4 .status, .course-status-bar .panel .row .col-md-2 .status {
 	color:white;
 	background-color: yellowgreen;
 	padding: 20px 10px;
@@ -251,6 +251,9 @@ a .course-row {
 	border: 2px solid white;
 }
 
+.course-status-bar .panel .row .col-md-2 .status {
+	padding: 24px 10px;
+}
 .course-status-bar .panel .row .col-md-4 .text {
 	background-color:deepskyblue;
 	padding: 6px;
@@ -260,9 +263,25 @@ a .course-row {
 	font-size: 15px;
 }
 
+.course-status-bar .panel .row .col-md-6 form{
+	display: inline;
+}
 .remove-material {
 	cursor: pointer;
 }
 .remove-material:hover {
 	color:red;
+}
+
+
+/* Rating related classes */
+
+.rating {
+	font-size: 18px;
+	font-weight: 300;
+}
+
+.rating select {
+	border: 1px solid lightgrey;
+	font-size: 18px;
 }

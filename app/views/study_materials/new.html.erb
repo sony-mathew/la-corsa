@@ -4,14 +4,8 @@
 <div class="add-new-study-material">
 	<h4>Add new Study Material</h4>
 	<br />
-	<% if @message %>
-		<div class="row msg">
-			<% alert_type = (@message.include? "success") ? "alert-success" : "alert-danger" %>
-			<div class="col-md-6 alert <%= alert_type %>"> 
-				<%= @message %> 
-			</div>
-		</div>	
-	<% end %>
+
+	<%= render 'shared/alert_message' %>
 
 
 	<%= form_for(@study_material) do |f| %>

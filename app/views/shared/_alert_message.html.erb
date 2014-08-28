@@ -1,0 +1,13 @@
+
+<% if flash[:success] or flash[:error] %>
+
+	<div class="row msg">
+
+		<% alert_type = flash[:success].nil? ? "alert-danger" : "alert-success" %>
+		<div class="alert <%= alert_type %>"> 
+			<%= flash[:success].nil? ? flash[:error] : flash[:success] %> 
+		</div>
+
+	</div>	
+
+<% end %>

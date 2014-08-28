@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140811053402) do
+ActiveRecord::Schema.define(:version => 20140826071817) do
 
   create_table "course_materials", :force => true do |t|
     t.integer  "course_id"
@@ -25,28 +25,29 @@ ActiveRecord::Schema.define(:version => 20140811053402) do
     t.string   "name"
     t.text     "description"
     t.integer  "user_id"
-    t.decimal  "rating",                 :precision => 10, :scale => 0
-    t.integer  "rating_user_count"
-    t.integer  "course_completed_count"
-    t.integer  "current_users_count"
+    t.decimal  "rating",                 :precision => 10, :scale => 0, :default => 0
+    t.integer  "rating_user_count",                                     :default => 0
+    t.integer  "course_completed_count",                                :default => 0
+    t.integer  "current_users_count",                                   :default => 0
     t.integer  "course_materials_count"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
   end
 
   create_table "learning_processes", :force => true do |t|
     t.integer  "mentor"
     t.integer  "student"
     t.integer  "course_id"
-    t.string   "status"
-    t.integer  "last_material"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "status",        :default => 3
+    t.integer  "last_material", :default => 0
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+    t.boolean  "rating_flag"
   end
 
   create_table "study_materials", :force => true do |t|
     t.string   "title"
-    t.string   "description"
+    t.text     "description"
     t.string   "link"
     t.integer  "user_id"
     t.datetime "created_at",  :null => false

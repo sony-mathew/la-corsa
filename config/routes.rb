@@ -1,36 +1,42 @@
 LaCorsa::Application.routes.draw do
   devise_for :users
 
-  match '/contact', :to => 'pages#contact'
+  #routes related to courses controller
+  match '/courses/filter/:courses_filter',            :to => 'courses#index'
+  match '/courses/enrolled/:status',                  :to => 'learning_processes#courses'
+  match '/study_materials/filter/:materials_filter',  :to => 'study_materials#index'
+  match '/students',                                  :to => 'learning_processes#students'
+
+  #routes related to pages controller
   match '/about',   :to => 'pages#about'
-  match '/help',    :to => 'pages#help'
+  root              :to => 'pages#home'
 
-  match '/searchCourses',    :to => 'courses#search'
-  root :to => 'pages#home'
-
-  
-  #resources :courses
-
-  resources :users do
-    resources :study_materials
-    resources :courses #do
-    #   resources :course_materials
-    # end
-    # resources :learning_processes
+  resources :study_materials do
+    collection do
+         get 'search'
+       end
   end
 
-  resources :study_materials
+  resources :learning_processes do
+    collection do
+      get 'drop_course'
+      get 'activate_course'
+      get 'enroll_me'
+      get 'finished_material'
+      get 'suggest'
+      get 'rate_course'
+    end
+  end  
+  #all resources listing
+  resources :users do
+    resources :study_materials
+    resources :courses
+  end
   resources :courses
 
-  match '/users/:id/students',    :to => 'learning_processes#students'
-  match '/users/:id/courses/enrolled/:status', :to => 'learning_processes#courses'
 
-  match '/drop-course',    :to => 'learning_processes#drop_course'
-  match '/activate-course',    :to => 'learning_processes#activate_course'
-  match '/enroll-me',    :to => 'learning_processes#enroll_me'
-  match '/finished-material',    :to => 'learning_processes#finished_material'
-  match '/suggest',    :to => 'learning_processes#suggest_course'
   
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

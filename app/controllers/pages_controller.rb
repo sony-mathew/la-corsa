@@ -4,7 +4,7 @@ class PagesController < ApplicationController
     @user = User.new
     if user_signed_in? 
       @title = "Welcome " + current_user.name
-      @nav_active = 'c'
+      @dashboard_tab = true
       render 'users/dashboard'
     end 
   end

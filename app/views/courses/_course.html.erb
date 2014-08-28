@@ -1,7 +1,7 @@
 
 <!-- List each course -->
 
-<% col1, col2 = ( current_user.id == course.user_id and @user_materials_flag) ? [7,5] : [8,4] %>
+<% col1, col2 = (current_user.id == course.user_id) ? [7,5] : [8,4] %>
 
 	<div class="panel panel-info">
 		<div class="panel-heading">
@@ -11,19 +11,19 @@
 					<small class="sub"> by <%= User.find(course.user_id).nickname.downcase %></small>
 				</div>
 				<div class="col-md-<%= col2 %>">
-					<span class="glyphicon glyphicon-star" title="Rating"> 
-						<%= course.rating %>
+					<span class="glyphicon glyphicon-star" title="Rated by <%= course.rating_user_count %> users"> 
+						<%= course.rating_user_count == 0 ? 0.0 : course.rating.to_f.round(1) %>
 					</span>
 					<span class="glyphicon glyphicon-eye-open" title="Users taking this course now">
-						<%= course.learning_processes.where("`status` = 'ON' or `status` = 'SUGGESTED'").count %>
+						<%= course.learning_processes.where("`status` = 2 or `status` = 3").count %>
 					</span>
 					<span class="glyphicon glyphicon-user" title="Users who took this course">
-						<%= course.learning_processes.count - course.learning_processes.where("`status` = 'ON' or `status` = 'SUGGESTED'").count %>
+						<%= course.learning_processes.count - course.learning_processes.where("`status` = 2 or `status` = 3").count %>
 					</span>
 					<%= link_to course do %>
 						<span class="glyphicon glyphicon-link" title="Go to the course"></span>
 					<% end %>
-					<% if current_user.id == course.user_id and @user_materials_flag %> 
+					<% if current_user.id == course.user_id %> 
 						<%= link_to user_course_path(current_user,course), :method => :delete, :confirm => "You sure?"  do %>
 							<span class="glyphicon glyphicon-trash" title="Delete this course"></span>
 						<% end %>

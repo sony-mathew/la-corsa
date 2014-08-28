@@ -23,12 +23,7 @@
 			<h4><%= heading %></h4>
 			<br/>
 			
-			<% if @message %>
-				<% alert_type = (@message.include? "success") ? "alert-success" : "alert-danger" %>
-				<div class="alert <%= alert_type %>"> 
-					<%= @message %> 
-				</div>
-			<% end %>				
+			<%= render 'shared/alert_message' %>				
 
 			<%= form_for(@course) do |f| %>
 
@@ -46,7 +41,7 @@
 
 
 
-			    <input type="hidden" value="<%= study_material_ids %>" id="material_ids" name="material_ids">
+			    <input type="hidden" value="<%= study_material_ids %>" id="material_ids" name="course[material_ids]">
 
 				<div class="row">
 					<div class="col-md-8"></div>	

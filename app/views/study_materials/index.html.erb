@@ -4,9 +4,8 @@
 	<%= will_paginate %>
 
 		<div class="study_materials">
-			<% if @message %>
-				<div class="alert alert-success" role="alert"> <%= @message %> </div>
-			<% end %>
+
+			<%= render 'shared/alert_message' %>
 
 			<!-- For showing the index correctly -->
 			<% if params[:page].nil? || params[:page] == "0" || params[:page] == "1" %>
@@ -22,9 +21,7 @@
 					<th>#</th>
 					<th>Title</th>
 					<th>Link</th>
-					<% if @user_materials_flag %>
-						<th> Update </th> 
-					<% end %>	
+					<th> Update </th> 
 				</tr>
 
 				<% @study_materials.each_with_index do |study_material, index| %>
@@ -33,13 +30,14 @@
 						<td> <%= index + 1 + x %> </td>
 						<td> <%= link_to study_material.title, study_material  %> </td>
 						<td> <%= link_to "", study_material.link, :class => "glyphicon glyphicon-link", :target => "_blank" %> </td>
-
-						<% if current_user.id == study_material.user_id and @user_materials_flag %> 
-							<td>
-								<%= link_to "", edit_user_study_material_path(current_user,study_material), :title => study_material.title, :class => "glyphicon glyphicon-edit edit_delete_space" %> 
-								<%= link_to "", user_study_material_path(current_user,study_material), :method => :delete, :confirm => "You sure?",:title => study_material.title, :class => "glyphicon glyphicon-trash" %>
-							</td>
-						<% end %> 
+						<td>
+							<% if current_user.id == study_material.user_id %> 
+									<%= link_to "", edit_study_material_path(study_material), :title => study_material.title, :class => "glyphicon glyphicon-edit edit_delete_space" %> 
+									<%= link_to "", user_study_material_path(current_user,study_material), :method => :delete, :confirm => "You sure?",:title => study_material.title, :class => "glyphicon glyphicon-trash" %>
+							<% else %>
+								Disabled
+							<% end %> 
+						</td>
 
 					</tr>
 				<% end %>

@@ -1,6 +1,6 @@
 class LearningProcessesController < ApplicationController
 
-	before_filter :initial
+	before_filter :set_tabs
 
 	def students
 		@students = current_user.occurences_as_mentor.paginate(:page => params[:page], :per_page => 15)
@@ -8,18 +8,18 @@ class LearningProcessesController < ApplicationController
 
 	def courses
 		if params[:status] == "dropped"
-			@courses = current_user.occurences_as_student.where("status = 'DROPPED'").paginate(:page => params[:page], :per_page => 15)
+			@courses = current_user.occurences_as_student.where("status = 1").paginate(:page => params[:page], :per_page => 15)
 		elsif params[:status] == "completed"
-			@courses = current_user.occurences_as_student.where("status = 'COMPLETED'").paginate(:page => params[:page], :per_page => 15)
+			@courses = current_user.occurences_as_student.where("status = 0").paginate(:page => params[:page], :per_page => 15)
 		else
-			@courses = current_user.occurences_as_student.where("status = 'ON' or status ='SUGGESTED'").paginate(:page => params[:page], :per_page => 15)
+			@courses = current_user.occurences_as_student.where("status = 2 or status =3").paginate(:page => params[:page], :per_page => 15)
 		end
 	end
 
 	def drop_course
 		if params[:lp_id]
 			lp = LearningProcess.find(params[:lp_id])
-			lp.status = "DROPPED"
+			lp.status = 1
 			lp.save
 			render text: "Success"
 		else
@@ -30,7 +30,7 @@ class LearningProcessesController < ApplicationController
 	def activate_course
 		if params[:lp_id]
 			lp = LearningProcess.find(params[:lp_id])
-			lp.status = "ON"
+			lp.status = (current_user.id == lp.mentor.id) ? 2 : 3
 			lp.save
 			render text: "Success"
 		else
@@ -42,6 +42,7 @@ class LearningProcessesController < ApplicationController
 		if params[:lp_id]
 			lp = LearningProcess.find(params[:lp_id])
 			lp.last_material += 1
+			lp.status = 0 if lp.last_material == lp.course.course_materials_count
 			lp.save
 			render text: "Success"
 		else
@@ -54,7 +55,7 @@ class LearningProcessesController < ApplicationController
 			reg = current_user.occurences_as_student.where("`course_id` = "+params[:course_id])
 			if reg.empty?
 				lp = LearningProcess.new
-				lp[:mentor], lp[:student], lp[:course_id], lp[:status] = current_user.id, current_user.id, params[:course_id].to_i, "ON"
+				lp[:mentor], lp[:student], lp[:course_id], lp[:status] = current_user.id, current_user.id, params[:course_id].to_i, 2
 				lp.save
 				render text: "Success"
 			else
@@ -65,7 +66,7 @@ class LearningProcessesController < ApplicationController
 		end
 	end
 
-	def suggest_course
+	def suggest
 		if params[:email]
 			user = User.where("`email` = '"+params[:email]+"'")
 			if user.empty?
@@ -75,7 +76,7 @@ class LearningProcessesController < ApplicationController
 				if reg.empty?
 					lp = LearningProcess.new
 					lp.mentor, lp.student, lp.course_id = current_user.id, user[0].id, params[:course]
-					lp.status = (current_user.id == user[0].id) ? "ON" : "SUGGESTED"
+					lp.status = (current_user.id == user[0].id) ? 2 : 3
 					lp.save
 					render text: "Success"
 				else
@@ -87,17 +88,36 @@ class LearningProcessesController < ApplicationController
 		end
 	end
 
+	def rate_course
+		@lp = LearningProcess.where("course_id = "+params[:course]+" and student = "+current_user.id.to_s)
+		if @lp.not_rated?
+			update_rating
+			render text: "Success"
+		else
+			render text: " Already Rated "
+		end
+	end
+
 	private
 
-		def initial
+		def set_tabs
 			if !params[:status]
-				@active = 't'
-				@nav_active = 'i'
-				@mentor = 1
+				@teach_tab = true
+				@students_sub_tab = true
 			else
-				@active = (params[:status] == "dropped" ? 't' : (params[:status] == "completed" ? 'c' : 'a'))
-				@nav_active = 't'
-				@student = 1
+				@learn_tab = true
+				@current_sub_tab = true if params[:status] == "current"
+				@completed_sub_tab = true if params[:status] == "completed"
+				@dropped_sub_tab = true if params[:status] == "dropped"
 			end
+		end
+
+		def update_rating
+			@lp.rating_flag = 1
+			course = Course.find(params[:course])
+			course.rating_user_count += 1
+			course.rating = (course.rating+params[:rating].to_f)/course.rating_user_count
+			course.save
+			@lp.save
 		end
 end

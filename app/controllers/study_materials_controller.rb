@@ -1,26 +1,20 @@
 class StudyMaterialsController < ApplicationController
 
-	before_filter :initial
+	before_filter :authenticate_user, :set_tab
+	before_filter :edit_title , :only => [:edit, :update]
+	before_filter :load_study_materials, :only => [:index]
 
 	def index
-		if params[:user_id].to_i == current_user.id
-			@user_materials_flag = 1
-			@study_materials = current_user.study_materials.paginate(:page => params[:page], :per_page => 15)
-		else
-			@study_materials = StudyMaterial.paginate(:page => params[:page], :per_page => 15)
-		end
 	end
 
 	def create
 		@study_material = current_user.study_materials.new(params[:study_material]) 
 		if @study_material.save
-			@message = "Study Material saved successfully."
-			@study_material = StudyMaterial.new
-			render 'new'
+			flash[:success] = "Study Material saved successfully."
 		else
-      		@message = "Sorry could not save your Study Material."
-			render 'new'
+      		flash[:error] = "Sorry could not save your Study Material."
 		end 
+		redirect_to new_study_material_path
 	end
 
 	def new
@@ -31,30 +25,28 @@ class StudyMaterialsController < ApplicationController
 		begin
 			@study_material = current_user.study_materials.find(params[:id])
 			render 'new'
-		rescue Exception => e
-			@message = "Could not edit the specified material as you are not it's owner or you provided an invalid Study Material ID."
-			redirect_to user_study_materials_path(current_user)
+		rescue ActiveRecord::RecordNotFound
+			flash[:error] = "Could not edit the specified material as you are not it's owner or you provided an invalid Study Material ID."
+			redirect_to study_materials_path
 		end
 	end
 
 	def show
 		begin
 			@study_material = StudyMaterial.find(params[:id])
-		rescue
-			@message = "Could not find the study material you specified."
-			redirect_to user_study_materials_path(current_user)
+		rescue ActiveRecord::RecordNotFound
+			flash[:error] = "Could not find the study material you specified."
+			redirect_to study_materials_path
 		end
 	end
 
 	def update
 		@study_material = StudyMaterial.find( params[:id])
 		if @study_material.update_attributes(params[:study_material])
-			@message = "Study Material updated."
-			@study_materials = current_user.study_materials.paginate(:page => params[:page], :per_page => 15)
-			@user_materials_flag = 1
-			render 'index'
+			flash[:success] = "Study Material updated."
+			redirect_to study_materials_path
 		else
-			@title = "Edit user"
+			flash[:error] = "Could not update the material."
 			render 'new'
 		end
 	end
@@ -62,24 +54,40 @@ class StudyMaterialsController < ApplicationController
 	def destroy
 		course = StudyMaterial.find(params[:id]).courses
 		if course
-			@message = "Could not delete the study material as it is already part of a course."
+			flash[:error] = "Could not delete the study material as it is already part of a course."
 		else
-  			StudyMaterial.find(params[:id]).destroy
-  			@message = "Successfully deleted the Study Material."
+			begin
+  				StudyMaterial.find(params[:id]).destroy
+  				flash[:success] = "Successfully deleted the Study Material."
+  			rescue	ActiveRecord::RecordNotFound
+  				flash[:error] = "Could not delete the specified material."
+  			end
   		end
-  		@user_materials_flag = 1
-  		@study_materials = current_user.study_materials.paginate(:page => params[:page], :per_page => 15)
-  		render 'index'
+  		redirect_to study_materials_path
+	end
+
+	def search
+		@results = StudyMaterial.where("title like \"%#{params[:search]}%\"").limit(10)
+		render json: @results
 	end
 
 	private
 
-		def initial
-			@active = 'a'
-			@nav_active = 'i'
-			@mentor = 1
+		def set_tab
+			@teach_tab = true
+			@study_materials_sub_tab = true
 		end
 
+		def edit_title
+			@title = "Edit Material"
+		end
 
+		def load_study_materials
+			if params[:materials_filter] == 'all'
+				@study_materials = StudyMaterial.paginate(:page => params[:page], :per_page => 15)
+			else
+				@study_materials = current_user.study_materials.paginate(:page => params[:page], :per_page => 15)
+			end
+		end
 
 end
