@@ -83,11 +83,16 @@ class StudyMaterialsController < ApplicationController
 		end
 
 		def load_study_materials
+			@study_materials = study_scope.paginate(:page => params[:page], :per_page => 15)
+		end
+
+		def study_scope
 			if params[:materials_filter] == 'all'
-				@study_materials = StudyMaterial.paginate(:page => params[:page], :per_page => 15)
+				StudyMaterial
 			else
-				@study_materials = current_user.study_materials.paginate(:page => params[:page], :per_page => 15)
+				current_user.study_materials
 			end
 		end
+
 
 end

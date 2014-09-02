@@ -11,10 +11,9 @@ class Course < ActiveRecord::Base
 
 	attr_accessible :description, :name, :course_materials_count, :material_ids
 	attr_accessor :material_ids
-	# attr_writer :material_ids
 
-	before_save :add_study_materials_to_course
-	before_update :update_study_materials_of_course
+	before_save :add_study_materials_to_course , :unless => [:rating_changed?, :rating_user_count_changed?]
+	before_update :update_study_materials_of_course, :unless => [:rating_changed?, :rating_user_count_changed?]
 
 	def add_study_materials_to_course
 		study_material_ids = self.material_ids.split(',').collect{|str| str.to_i}
@@ -35,8 +34,12 @@ class Course < ActiveRecord::Base
 	end
 
 	def is_sufficient_materials?
-		materials = self.material_ids.split(',').collect{|str| str.to_i} 
-		(materials.count == 0) ? false : true
+		material_ids.split(',').collect{|str| str.to_i}.count > 0
 	end
 
+	def rate!(user_rating)
+		self.rating = ( rating * course.rating_user_count + user_rating )/rating_user_count
+		self.rating_user_count += 1
+		save!
+	end
 end

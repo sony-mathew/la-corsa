@@ -12,7 +12,7 @@
 				</div>
 				<div class="col-md-<%= col2 %>">
 					<span class="glyphicon glyphicon-star" title="Rated by <%= course.rating_user_count %> users"> 
-						<%= course.rating_user_count == 0 ? 0.0 : course.rating.to_f.round(1) %>
+						<%= course.rating_user_count == 0 ? 0.0 : course.rating %>
 					</span>
 					<span class="glyphicon glyphicon-eye-open" title="Users taking this course now">
 						<%= course.learning_processes.where("`status` = 2 or `status` = 3").count %>

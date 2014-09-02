@@ -69,11 +69,6 @@ class CoursesController < ApplicationController
   		redirect_to courses_path
 	end
 
-	def all_courses
-		
-		render 'index'
-	end
-
 	private
 
 		def select_tab

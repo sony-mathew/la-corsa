@@ -4,17 +4,17 @@
 		
 		<div class="row">
 			<div class="col-md-4">
-				<% lp = @course.learning_processes.where("student = "+current_user.id.to_s) %>
-				<% if !lp.empty? %>
-					<% if (lp[0].pursuing? or lp[0].suggested?) %>
+				<% lp = @course.learning_processes.where("student = "+current_user.id.to_s).first %>
+				<% if !lp.nil? %>
+					<% if (lp.pursuing? or lp.suggested?) %>
 						<span class="text">Completion Status &nbsp;&nbsp;&nbsp;</span>
 						<span class="status"> 
-							<% per = ((lp[0].last_material.to_f/@course.course_materials_count).round(2)*100).to_i %>
+							<% per = ((lp.last_material.to_f/@course.course_materials_count).round(2)*100).to_i %>
 							<%= per == 0 ? '&nbsp;'.html_safe+per.to_s : per %> %
 						</span>	
 					<% else %>
-						<% alert_type = lp[0].dropped? ? "alert-danger" : "alert-success"  %>
-						<% if lp[0].complete? and !lp[0].rating_flag? %>
+						<% alert_type = lp.dropped? ? "alert-danger" : "alert-success"  %>
+						<% if lp.complete? and !lp.rated? %>
 							<span class="rating"> 
 							Rating &nbsp; <select name="rating" class="rating-input" data-course="<%= @course.id %>">
 												<option>1</option>
@@ -26,7 +26,7 @@
 							</span> &nbsp;&nbsp;&nbsp;&nbsp;
 							<button type="button" class="btn btn-info rate-button">Rate Course</button>
 						<% else %>
-							<div class="alert <%= alert_type %>"> You have <%= lp[0].status_name %> this course. </div>	
+							<div class="alert <%= alert_type %>"> You have <%= lp.status_name %> this course. </div>	
 						<% end %>
 					<% end %>	 
 				<% else %>
@@ -34,12 +34,12 @@
 				<% end %>	
 			</div>
 			<div class="col-md-2">
-				<% if !lp.empty? %>
-					<% if (lp[0].pursuing? or lp[0].suggested? ) %>
-						<button type="button" class="btn btn-danger drop-course" data-lp="<%= lp[0].id %>">Drop course</button>
-					<% elsif lp[0].dropped? %>
-						<button type="button" class="btn btn-success activate-course" data-lp="<%= lp[0].id %>">Activate course</button>
-					<% elsif lp[0].complete? %>
+				<% if !lp.nil? %>
+					<% if (lp.pursuing? or lp.suggested?) %>
+						<button type="button" class="btn btn-danger drop-course" data-lp="<%= lp.id %>">Drop course</button>
+					<% elsif lp.dropped? %>
+						<button type="button" class="btn btn-success activate-course" data-lp="<%= lp.id %>">Activate course</button>
+					<% elsif lp.complete? %>
 						<span class="status"> 
 							100%
 						</span>		

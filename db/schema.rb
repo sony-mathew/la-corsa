@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(:version => 20140826071817) do
     t.string   "name"
     t.text     "description"
     t.integer  "user_id"
-    t.decimal  "rating",                 :precision => 10, :scale => 0, :default => 0
+    t.float  "rating",                 :precision => 10, :scale => 0, :default => 0
     t.integer  "rating_user_count",                                     :default => 0
     t.integer  "course_completed_count",                                :default => 0
     t.integer  "current_users_count",                                   :default => 0
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20140826071817) do
     t.integer  "last_material", :default => 0
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
-    t.boolean  "rating_flag"
+    t.boolean  "rated"
   end
 
   create_table "study_materials", :force => true do |t|

@@ -218,7 +218,7 @@ function dropCourse(element) {
 			dspCourseMsg(msg);
 			reload();
 	} else {
-			msg = "Could not drop the course.";
+			msg = "Could not drop the course."+xmlhttp.responseText;
 			dspCourseMsg(msg);
 	}	
 	console.log("in drop course. : "+lpId);
@@ -253,7 +253,7 @@ function enrollMe(element) {
 			msg = "Could not enroll for the course.["+xmlhttp.responseText+"]";
 			dspCourseMsg(msg);
 	}	
-	console.log("in enroll course. : "+lpId);
+	console.log("in enroll course. : "+courseId);
 }
 
 function finishedCurrentMaterial(element) {
@@ -264,7 +264,7 @@ function finishedCurrentMaterial(element) {
 	if ( xmlhttp.responseText == "Success") {
 			reload();
 	} else {
-			msg = "Could not update that request of you finishing the current study material.";
+			msg = "Could not update that request of you finishing the current study material."+xmlhttp.responseText;
 			dspCourseMsg(msg);
 	}	
 	console.log("in finishedCurrentMaterial course." + lpId + "## "+ xmlhttp.responseText);
