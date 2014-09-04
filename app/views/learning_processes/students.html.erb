@@ -3,6 +3,7 @@
 <% if !@students.empty? %>
 	<%= will_paginate @students %>
 		<table class="table table-hover table-bordered">
+			
 			<tr>
 				<th> # </th>
 				<th> Student </th>
@@ -11,28 +12,25 @@
 				<th> Completion </th>
 				<th> Status </th>
 			</tr>
-			<% counter = 1 %>
-			<% @students.each_with_index do |s, index| %>
 
-				<% if s.is_self_student? %>	
-					<tr>
-						<td> <%= ++counter %> </td>
-						<td> <%= s.student.id == current_user.id ? "Self" : s.student.name %></td>
-						<td> 
-							<%= link_to s.course.name, course_path(s.course) %>
-						</td>
-						<td> 
-							<% if s.last_material > 0 %>
-								<% study_material = s.course.study_materials.where("`order` = "+s.last_material.to_s) %>
-								<%= link_to study_material[0].title, study_material_path(study_material[0]) %>
-							<% else %>
-								Haven't started taking the course.
-							<% end %>					
-						</td>
-						<td> <%= ((s.last_material.to_f/s.course.course_materials_count).round(2)*100).to_i %> %</td>
-						<td> <%= s.status_name %> </td>
-					</tr>
-				<% end %>	
+			<% @students.each_with_index do |s, index| %>
+				<tr>
+					<td> <%= (index + 1) %> </td>
+					<td> <%= s.student.name %></td>
+					<td> 
+						<%= link_to s.course.name, course_path(s.course) %>
+					</td>
+					<td> 
+						<% if s.last_material > 0 %>
+							<% study_material = s.course.study_materials.where("`order` = "+s.last_material.to_s) %>
+							<%= link_to study_material[0].title, study_material_path(study_material[0]) %>
+						<% else %>
+							Haven't started taking the course.
+						<% end %>					
+					</td>
+					<td> <%= ((s.last_material.to_f/s.course.course_materials_count).round(2)*100).to_i %> %</td>
+					<td> <%= s.status_name %> </td>
+				</tr>	
 			<% end %>
 		</table>
 	<%= will_paginate @students %>			

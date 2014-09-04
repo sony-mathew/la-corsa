@@ -5,8 +5,7 @@ class LearningProcess < ActiveRecord::Base
 	belongs_to :course
 
 
-	attr_accessible :mentor, :student 
-	attr_accessor :sample_variable
+	attr_accessible :mentor, :student
 
 	validates :mentor, :presence => true
 	validates :student, :presence => true
@@ -18,9 +17,6 @@ class LearningProcess < ActiveRecord::Base
 
 	default_scope :order => 'learning_processes.created_at DESC'
 
-	after_save :simple_testing
-	after_update :simple_testing
-	before_save :simple_testing
 
 	STATUSES_REV = {
 		:Completed => 0,
@@ -28,8 +24,8 @@ class LearningProcess < ActiveRecord::Base
 		:Pursuing => 2,
 		:Suggested => 3}
 
-	def simple_testing
-		p "a"*1000
+	def self_saver
+		save!
 	end	
 		
 	def status_name
@@ -52,7 +48,7 @@ class LearningProcess < ActiveRecord::Base
 		status == STATUSES_REV[:Suggested]
 	end	
 
-	def is_self_student?
+	def self_student?
 		!(self.student == self.mentor)
 	end
 

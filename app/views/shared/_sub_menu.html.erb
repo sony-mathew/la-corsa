@@ -1,16 +1,16 @@
-<% if @learn_tab and (@current_sub_tab or @completed_sub_tab or @dropped_sub_tab) %>
+<% if ( ( @main_tab == :learn ) and ( @sub_tab == :current or @sub_tab == :completed or @sub_tab == :dropped ) )  %>
 			<!-- Sub Navigation Bar  Start-->		
 			<ul class="nav nav-tabs sub-nav-bar" role="tablist">
 				<% base_url = '/courses/enrolled' %>
-			  <li class="<%= "active" if @current_sub_tab %>"><a href="<%= base_url %>/current">Current</a></li>
-			  <li class="<%= "active" if @completed_sub_tab %>"><a href="<%= base_url %>/completed">Completed</a></li>
-			  <li class="<%= "active" if @dropped_sub_tab %>"><a href="<%= base_url %>/dropped">Dropped</a></li>
+			  <li class="<%= "active" if @sub_tab == :current %>"><a href="<%= base_url %>/current">Current</a></li>
+			  <li class="<%= "active" if @sub_tab == :completed %>"><a href="<%= base_url %>/completed">Completed</a></li>
+			  <li class="<%= "active" if @sub_tab == :dropped %>"><a href="<%= base_url %>/dropped">Dropped</a></li>
 			</ul>
 			<!-- Sub Navigation Bar end -->
-<% elsif @teach_tab %>
+<% elsif @main_tab == :teach %>
 			<!-- Sub Navigation Bar  Start-->		
 			<ul class="nav nav-tabs sub-nav-bar" role="tablist">
-				<li class="dropdown <%= "active" if @study_materials_sub_tab %>">
+				<li class="dropdown <%= "active" if @sub_tab == :study_materials %>">
 			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 			          	Study Materials
 			          	<span class="caret"></span>
@@ -22,7 +22,7 @@
 			        </ul>
 			    </li>
 
-			  	<li class="<%= "active" if @courses_sub_tab %>">
+			  	<li class="<%= "active" if @sub_tab == :courses %>">
 			  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 			          	Courses
 			          	<span class="caret"></span>
@@ -32,7 +32,7 @@
 			            <li><%= link_to "Add New", new_course_path %></li>
 			        </ul>
 			  	</li>
-			  	<li class="<%= "active" if @students_sub_tab %>"><a href="/students">Students</a></li>
+			  	<li class="<%= "active" if @sub_tab == :students %>"><a href="/students">Students</a></li>
 			</ul>
 			<!-- Sub Navigation Bar end -->
 <% end %>

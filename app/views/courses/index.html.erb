@@ -4,7 +4,11 @@
 <%= render 'shared/alert_message' %>
 
 <div class="courses">
-	<%= render @courses %>
+	<% if @courses.empty? %>
+		<div class="alert alert-info"> You don't have any courses </div>
+	<% else %>
+		<%= render @courses %>
+	<% end %>
 </div>
 
 <%= will_paginate @courses %> 

@@ -23,7 +23,7 @@ class StudyMaterialsController < ApplicationController
 
 	def edit
 		begin
-			@study_material = current_user.study_materials.find(params[:id])
+			@study_material = default_study_scope
 			render 'new'
 		rescue ActiveRecord::RecordNotFound
 			flash[:error] = "Could not edit the specified material as you are not it's owner or you provided an invalid Study Material ID."
@@ -41,7 +41,7 @@ class StudyMaterialsController < ApplicationController
 	end
 
 	def update
-		@study_material = StudyMaterial.find( params[:id])
+		@study_material = default_study_scope
 		if @study_material.update_attributes(params[:study_material])
 			flash[:success] = "Study Material updated."
 			redirect_to study_materials_path
@@ -52,12 +52,11 @@ class StudyMaterialsController < ApplicationController
 	end
 	
 	def destroy
-		course = StudyMaterial.find(params[:id]).courses
-		if course
+		if default_study_scope.courses.exists?
 			flash[:error] = "Could not delete the study material as it is already part of a course."
 		else
 			begin
-  				StudyMaterial.find(params[:id]).destroy
+  				default_study_scope.destroy
   				flash[:success] = "Successfully deleted the Study Material."
   			rescue	ActiveRecord::RecordNotFound
   				flash[:error] = "Could not delete the specified material."
@@ -67,15 +66,15 @@ class StudyMaterialsController < ApplicationController
 	end
 
 	def search
-		@results = StudyMaterial.where("title like \"%#{params[:search]}%\"").limit(10)
+		@results = StudyMaterial.where(['title LIKE ?', "%#{params[:search]}%"]).limit(10)
 		render json: @results
 	end
 
 	private
 
 		def set_tab
-			@teach_tab = true
-			@study_materials_sub_tab = true
+			@main_tab = :teach
+			@sub_tab = :study_materials
 		end
 
 		def edit_title
@@ -87,12 +86,11 @@ class StudyMaterialsController < ApplicationController
 		end
 
 		def study_scope
-			if params[:materials_filter] == 'all'
-				StudyMaterial
-			else
-				current_user.study_materials
-			end
+			params[:materials_filter] == 'all'? StudyMaterial : current_user.study_materials
 		end
 
+		def default_study_scope
+			study_scope.find(params[:id])
+		end
 
 end

@@ -3,17 +3,16 @@ var xmlhttp, ADDED_MATERILAS_COUNT = 0;
 initialize_ajax_object();
 addEventListnersz();
 
-function addMaterialClick(element) {
-	var materialId = parseInt(element.getAttribute("data-id"));
+function initialize_ajax_object() {
 
-	if( inAddedMaterials(materialId, 0) ) {
-		addStudyMaterial(materialId, element);
-	}
+	if (window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp = new XMLHttpRequest();
+  	}
 	else {
-		$(this).html("Already added this material.");
-	}
-
-	$(element).remove();
+		// code for IE6, IE5
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
 }
 
 function searchFunction() {
@@ -37,7 +36,7 @@ function searchFunction() {
 
 		$.each(parsedResults, function(index, element) {
 
-			if ( inAddedMaterials(element.id, 0) ) {	
+			if ( notInAddedMaterials(element.id, 0) ) {	
 				showSingleResult(count, element);
 				count++;
 				flag = 1;
@@ -60,18 +59,108 @@ function searchFunction() {
 	//document.getElementById("").innerHTML=xmlhttp.responseText;
 }
 
+function addMaterialClick(element) {
+	var materialId = parseInt(element.getAttribute("data-id"));
 
-function inAddedMaterials(id, flag) {
-	if (($('#material_ids').val() == undefined) && (flag == 1)) {
-		return [];
+	if( notInAddedMaterials(materialId, 0) ) {
+		console.log("clicked : "+ materialId)
+		addStudyMaterial(materialId, element);
 	}
-	var addedMaterials = $('#material_ids').val().split(",").map(Number);
-	//var arrayOfNumbers = ["1", "2", "3"].map(Number);
+	else {
+		$(this).html("Already added this material.");
+	}
+
+	$(element).remove();
+}
+
+function notInAddedMaterials(id, flag) {
+	var materials = $("input[id='material_ids']").map(function(){return $(this).val();}).get().map(Number);
 	if( flag == 0 ) {
-		return (($.inArray( id, addedMaterials) == -1) ? true : false) ;
+		return (($.inArray( id, materials) == -1) ? true : false) ;
 	} else {
-		return addedMaterials;
+		return materials;
 	}
+}
+function addStudyMaterial(materialId, slectedElement) {
+
+	//get the already added materials id 
+	var materials = notInAddedMaterials(0,1);
+
+	//add the new material to it
+	generateInputForAddStudyMaterial(materialId);
+
+	console.log("generateInputForAddStudyMaterial " + materialId);
+
+	//list the study materials as added
+	li = document.createElement('li');
+	if (ADDED_MATERILAS_COUNT == 0) { 
+		$(".added-materials").empty();
+	}	
+	var row = generateRow( ++ADDED_MATERILAS_COUNT, slectedElement.getAttribute("data-title"));
+	row = generateRowWithClose(materialId, row);
+	$(row).appendTo(li);
+	$(li).addClass("list-group-item study-material-id-"+materialId);
+	$(li).appendTo($(".added-materials"));
+}
+
+function removeMaterial(element) {
+	
+	var materialId = parseInt($(element).attr("data-material"));
+
+	if( !notInAddedMaterials(materialId, 0) ) {
+		console.log("inside processing");
+		//get the already added materials id 
+		var materials = notInAddedMaterials(0 ,1);
+		console.log(materials);
+		ADDED_MATERILAS_COUNT -= 1;
+		if ( materials.indexOf(materialId) != -1)
+			{ materials.splice(materials.indexOf(materialId), 1); }
+
+		console.log(materials);
+		//change the hidden input attribute value to new value
+
+		$("input[value='"+materialId+"']").remove();
+	}
+	console.log("remove the element : "+materialId + "### all materials : " + materials);
+	$(".study-material-id-"+materialId).remove();
+}
+
+function generateInputForAddStudyMaterial(value) {
+	input = document.createElement('input');
+	$(input).attr("type", "hidden" );
+	$(input).attr("name", "course[material_ids][]" );
+	$(input).attr("id", "material_ids" );
+	$(input).val(value);
+	$(input).appendTo("#new_edit_course");
+}
+
+function generateRow( count, content) {
+
+	row = document.createElement('div');
+	$(row).addClass("row");
+
+		col1 = document.createElement('div');
+		$(col1).addClass("col-md-10");
+		$(col1).html(content);
+
+	$(col1).appendTo(row);
+
+	return row;
+}
+
+function generateRowWithClose(materialId, row) {
+
+	var col3 = document.createElement('div');
+	$(col3).addClass("col-md-1");
+
+		var span = document.createElement('span');
+		$(span).addClass("glyphicon glyphicon-remove remove-material");
+		$(span).attr("data-material", materialId );
+		$(span).click( function() { removeMaterial(this); });
+
+	$(span).appendTo(col3);	
+	$(col3).appendTo(row);
+	return row;
 }
 
 function showSingleResult( index, obj) {
@@ -88,17 +177,6 @@ function showSingleResult( index, obj) {
 	$(li).appendTo($(".searchresults"));
 }
 
-function initialize_ajax_object() {
-
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-  		xmlhttp = new XMLHttpRequest();
-  	}
-	else {
-		// code for IE6, IE5
-  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  	}
-}
 
 function displayMsg( num) {
 
@@ -118,66 +196,7 @@ function displayMsg( num) {
 	console.log(msgs[0]);
 }
 
-function addStudyMaterial(materialId, slectedElement) {
 
-	//get the already added materials id 
-	var materials = inAddedMaterials(0, 1);
-
-	if ( materials.indexOf(0) != -1)
-		{ materials.splice(materials.indexOf(0), 1); }
-
-	//add the new material to it
-	materials.push(materialId);
-
-	//change the hidden input attribute value to new value
-	$("#material_ids").val(materials);
-
-	//list the study materials as added
-	li = document.createElement('li');
-	if (ADDED_MATERILAS_COUNT == 0) { 
-		$(".added-materials").empty();
-	}	
-	var row = generateRow( ++ADDED_MATERILAS_COUNT, slectedElement.getAttribute("data-title"));
-	row = generateRowWithClose(materialId, row);
-	$(row).appendTo(li);
-	$(li).addClass("list-group-item study-material-id-"+materialId);
-	$(li).appendTo($(".added-materials"));
-
-}
-
-function generateRow( count, content) {
-
-	row = document.createElement('div');
-	$(row).addClass("row");
-
-		// col1 = document.createElement('div');
-		// $(col1).addClass("col-md-1");
-		// $(col1).html(count);
-
-		col2 = document.createElement('div');
-		$(col2).addClass("col-md-10");
-		$(col2).html(content);
-
-	// $(col1).appendTo(row);
-	$(col2).appendTo(row);
-
-	return row;
-}
-
-function generateRowWithClose(materialId, row) {
-
-	var col3 = document.createElement('div');
-	$(col3).addClass("col-md-1");
-
-		var span = document.createElement('span');
-		$(span).addClass("glyphicon glyphicon-remove remove-material");
-		$(span).attr("data-material", materialId );
-		$(span).click( function() { removeMaterial(this); });
-
-	$(span).appendTo(col3);	
-	$(col3).appendTo(row);
-	return row;
-}
 
 function addEventListnersz() {
 
@@ -201,9 +220,7 @@ function addEventListnersz() {
 		$(rm[i]).click( function() { removeMaterial(this); });
 	}
 
-	if( inAddedMaterials(0,1)[0] != 0) {
-		ADDED_MATERILAS_COUNT = inAddedMaterials(0, 1).length;
-	}
+	ADDED_MATERILAS_COUNT = notInAddedMaterials(0, 1).length;
 	
 }
 
@@ -332,29 +349,6 @@ function IsEmail(email) {
   	return regex.test(email);
 }
 
-function removeMaterial(element) {
-	
-	var materialId = parseInt($(element).attr("data-material"));
-
-	if( !inAddedMaterials(materialId, 0) ) {
-		console.log("inside processing");
-		//get the already added materials id 
-		var materials = inAddedMaterials(0, 1);
-		console.log(materials);
-		ADDED_MATERILAS_COUNT -= 1;
-		if ( materials.indexOf(materialId) != -1)
-			{ materials.splice(materials.indexOf(materialId), 1); }
-
-		if ( materials.indexOf(0) != -1)
-			{ materials.splice(materials.indexOf(0), 1); }
-
-		console.log(materials);
-		//change the hidden input attribute value to new value
-		$("#material_ids").val(materials);
-	}
-	console.log("remove the lement"+materials);
-	$(".study-material-id-"+materialId).remove();
-}
 
 function rating() {
 	var course = parseInt($(".rating-input").attr("data-course"));

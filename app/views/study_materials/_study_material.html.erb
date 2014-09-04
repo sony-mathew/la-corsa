@@ -2,7 +2,7 @@
 <% panel_class = "default" %>
 
 
-<% if (@course_flag and @learning_process[0].status != "COMPLETED") %>
+<% if (@course_flag and !@learning_process[0].complete?) %>
   <% panel_class = @counter < @learning_process[0].last_material ? "info" : ( @counter == @learning_process[0].last_material ? "success" : "default") %> 
   <% @counter = @counter + 1 %>
 <% end %>

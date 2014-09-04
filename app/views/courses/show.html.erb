@@ -11,7 +11,7 @@
 <!-- End Course status bar -->
 
 <!-- Display the study materials in Order -->
-<% @learning_process = current_user.occurences_as_student.where("`course_id` = "+@course.id.to_s) %>
+<% @learning_process = current_user.occurences_as_student.where(course_id: @course.id) %>
 <% if !@learning_process.empty? %>
 	<% @course_flag = true %>
 	<% @counter = 0 %>

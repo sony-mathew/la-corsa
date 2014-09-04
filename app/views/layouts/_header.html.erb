@@ -15,15 +15,15 @@
 		      <ul class="nav navbar-nav navbar-right">
 		        
 		        <% if user_signed_in? %>
-		        	<li class="<%= :active if @open_courses_tab %>"><%= link_to "Open Courses", "/courses/filter/open" %></li>
+		        	<li class="<%= :active if @main_tab == :open %>"><%= link_to "Open Courses", "/courses/filter/open" %></li>
 
-		        	<li class="<%= :active if @dashboard_tab %>">
+		        	<li class="<%= :active if @main_tab == :dashboard %>">
 		        		<%= link_to "Dashboard", root_path %>
 		        	</li>
-		        	<li class="<%= :active if @learn_tab %>">
+		        	<li class="<%= :active if @main_tab == :learn %>">
 		        		<a href="/courses/enrolled/current"> Learn </a>
 		        	</li>
-		        	<li class="<%= :active if @teach_tab %>">
+		        	<li class="<%= :active if @main_tab == :teach %>">
 		        		<a href="/students">Teach</a>
 		        	</li>
 		        	<li class="dropdown">

@@ -1,15 +1,17 @@
 class CoursesController < ApplicationController
 
 	before_filter :authenticate_user
-	before_filter :select_tab, :except => [:show]
+	before_filter -> { set_tab false }, :except => [:show]
+	before_filter -> { set_tab true }, :only => [:show]
 	before_filter :load_courses, :only => [:index]
+	before_filter :default_course_scope, :only => [:update, :destroy]
 
 	def index
 	end
 
 	def create
 		@course = current_user.courses.new(params[:course])
-		if @course.is_sufficient_materials?
+		if @course.sufficient_materials?
 			if @course.save
 				flash[:success] = "Your course was saved successfully."
 			else
@@ -27,7 +29,7 @@ class CoursesController < ApplicationController
 
 	def edit
 		begin
-			@course = current_user.courses.find(params[:id])
+			default_course_scope
 			@study_materials = @course.study_materials
 			render 'new'
 		rescue ActiveRecord::RecordNotFound
@@ -44,12 +46,10 @@ class CoursesController < ApplicationController
 			redirect_to courses_path(current_user)
 		end
 		@study_materials = @course.study_materials
-		@learn_tab = true
 	end
 
 	def update
-		@course = current_user.courses.find_by_id( params[:id])
-		if @course.is_sufficient_materials?
+		if params[:course][:material_ids].count > 0
 				@course.update_attributes!(params[:course])
 				flash[:success] = "successfully updated the course."
 		else
@@ -59,30 +59,33 @@ class CoursesController < ApplicationController
 	end
 
 	def destroy
-		course = Course.find(params[:id])
-		if course.learning_processes.empty?
-			Course.find(params[:id]).destroy
-  			flash[:success] = "successfully deleted the Course."
+		if @course.learning_processes.exists?
+			flash[:error] = "Coudn't delete because "+course.learning_processes.count.to_s+" users are currently taking this course."
   		else
-  			flash[:error] = course.learning_processes.count.to_s+" users are currently taking this course. So unable to delete this course."
+  			@course.destroy
+  			flash[:success] = "successfully deleted the Course."
   		end
   		redirect_to courses_path
 	end
 
 	private
 
-		def select_tab
-			@teach_tab = true
-			@courses_sub_tab = true
+		def set_tab(tab)
+			@main_tab = params[:courses_filter] ? :open : (tab ? :learn : :teach)
+			@sub_tab = :courses
 		end
 
+
 		def load_courses
-			if params[:courses_filter] == 'all' or params[:courses_filter] == 'open'
-				@courses = Course.paginate(:page => params[:page], :per_page => 15)
-				@teach_tab, @open_courses_tab = params[:courses_filter] == 'open' ? [false, true] : [true, false]
-			else
-				@courses = current_user.courses.paginate(:page => params[:page], :per_page => 15)
-			end
+			@courses = course_scope.paginate(:page => params[:page], :per_page => 15)
+		end
+
+		def course_scope
+			(params[:courses_filter] == 'open') ? Course : current_user.courses
+		end
+
+		def default_course_scope
+			@course = course_scope.find(params[:id])
 		end
 		
 end

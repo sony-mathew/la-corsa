@@ -9,14 +9,9 @@
 		<div class="add_new_course">
 			
 			<% heading = "Edit Course" %>
-			<% study_material_ids = "" %>
 			
 			<% if @study_materials.nil? %>
 				<% heading = "Add a New Course" %>
-			<% else %>
-				<% @study_materials.each do |study_material| %>
-					<% study_material_ids += study_material.id.to_s + "," %>
-				<% end %>
 			<% end %>
 
 
@@ -25,7 +20,7 @@
 			
 			<%= render 'shared/alert_message' %>				
 
-			<%= form_for(@course) do |f| %>
+			<%= form_for @course, html: {:id => "new_edit_course"} do |f| %>
 
 				<%= render 'shared/error_messages', :object => f.object %>
 			  
@@ -39,14 +34,16 @@
 			    	<div class="col-md-6"><%= f.text_area :description, :class => "studyText" %></div>
 			    </div>
 
-
-
-			    <input type="hidden" value="<%= study_material_ids %>" id="material_ids" name="course[material_ids]">
-
 				<div class="row">
 					<div class="col-md-8"></div>	
 			  		<div class="col-md-3"><%= f.submit "Submit",:class => "btn btn-success" %></div>
 			  	</div>
+
+			  	<% if !@study_materials.nil? %>
+			  		<% @study_materials.each do |study_material| %>
+			  			<input type="hidden" name="course[material_ids][]" id="material_ids" value="<%= study_material.id %>">
+					<% end %>
+				<% end %>
 
 			<% end %>
 		</div>

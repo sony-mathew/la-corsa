@@ -7,7 +7,7 @@
       <div class="signup">
 
         <div class="row">  
-            <div class="col-md-8 alert alert-danger">
+            <div class="col-md-8 <%= "alert alert-danger" if !devise_error_messages!.empty? %>">
                 <%= devise_error_messages! %>
             </div>
         </div>  

@@ -9,4 +9,5 @@ class CourseMaterial < ActiveRecord::Base
 	validates :study_material_id, :presence => true
 	validates :order, :presence => true
 
+	attr_accessible :course_id, :study_material_id, :order
 end
