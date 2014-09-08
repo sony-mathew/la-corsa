@@ -31,11 +31,19 @@ describe CoursesController do
 
 				describe "doing POST 'create'" do
 					before(:each) do
-						@attr = { :name=> "", :description => "", :material_ids => [] }
+						@attr = { :name=> "", :description => "", :material_ids => ["2", "3"] }
 					end
 
 					describe "failure" do
-						it "should not create a course" do 
+						it "should not create a course without title and description" do 
+							lambda do
+								post :create, :course => @attr 
+							end.should_not change(Course, :count)
+						end
+
+
+						it "should not create a course without material_ids" do 
+							@attr[:material_ids] = []
 							lambda do
 								post :create, :course => @attr 
 							end.should_not change(Course, :count)
@@ -145,6 +153,10 @@ describe CoursesController do
 
 					describe "failure if someone is taking the course" do
 						it "should not destroy the course" do
+							@course.learning_processes.create(:mentor => @user, :student => @user)
+							# xhr :get, :enroll_me, :course_id => @course.id
+							delete :destroy, :id => @course.id
+							flash[:error].should =~ /Coudn't delete/i
 						end
 					end
 				end

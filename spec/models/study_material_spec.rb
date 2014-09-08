@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe StudyMaterial do
 
-	let(:user) { FactoryGirl.create(:user) }
-	let!(:sm) do 
-			FactoryGirl.create(:study_material, :user_id => user.id, created_at: 1.day.ago)
-		end
-	let(:course) { FactoryGirl.create(:course, :material_ids => [sm.id]) }
+	before(:each) do 
+		@user = FactoryGirl.create(:user)
+		@sm = FactoryGirl.create(:study_material, :user_id => @user.id, created_at: 1.day.ago)
+		@course =  FactoryGirl.create(:course, :material_ids => [@sm.id]) 
+	end
 
-	before { @study_material = user.study_materials.build(:title => 'sdaghj', :description => "kadskjfhdkjfhsdkj", :link => "dhfj.com") }
+	before { @study_material = @user.study_materials.build(:title => 'sdaghj', :description => "kadskjfhdkjfhsdkj", :link => "dhfj.com") }
 
 	subject { @study_material }
 
@@ -18,14 +18,14 @@ describe StudyMaterial do
 	it { should respond_to(:user) }
 	it { should respond_to(:user_id) }
 
-	its(:user) { should == user }
+	its(:user) { should == @user }
 
 	it { should be_valid }
 
 	describe "accessible attributes" do
 		it "should not allow access to user_id" do
 			expect do
-				StudyMaterial.new(user_id: user.id)
+				StudyMaterial.new(user_id: @user.id)
 			end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
 		end    
 	end
@@ -48,11 +48,10 @@ describe StudyMaterial do
 	describe "course material associations" do
 
 		it "should destroy associated course materials" do
-			# p sm, course, CourseMaterial.all
-			coursematerials = sm.course_materials.dup
-			sm.destroy
-			coursematerials.should be_empty
-			coursematerials.each do |coursematerial|
+			@cms = @sm.course_materials.dup
+			@sm.destroy
+			@cms.should_not be_empty
+			@cms.each do |coursematerial|
 				CourseMaterial.find_by_id(coursematerial.id).should be_nil
 			end
 		end

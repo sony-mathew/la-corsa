@@ -133,6 +133,13 @@ describe StudyMaterialsController do
 							delete :destroy, :id => @study_material
 						end.should change(StudyMaterial, :count).by(-1)
 					end 
+
+					it "should not destroy the study material if it's part of some other course" do
+						FactoryGirl.create(:course, :material_ids => [@study_material.id])
+						lambda do
+							delete :destroy, :id => @study_material
+						end.should_not change(StudyMaterial, :count).by(-1)
+					end
 				end
 
 				describe "GET 'index'" do

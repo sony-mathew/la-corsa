@@ -58,7 +58,7 @@ class StudyMaterialsController < ApplicationController
 	
 	def destroy
 		if default_study_scope
-			if default_study_scope.courses.exists?
+			if default_study_scope.course_materials.exists?
 				flash[:error] = "Could not delete the study material as it is already part of a course."
 			else
 	  			default_study_scope.destroy

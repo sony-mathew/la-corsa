@@ -63,7 +63,7 @@ class CoursesController < ApplicationController
 
 	def destroy
 		if @course.learning_processes.exists?
-			flash[:error] = "Coudn't delete because "+course.learning_processes.count.to_s+" users are currently taking this course."
+			flash[:error] = "Coudn't delete because "+@course.learning_processes.count.to_s+" users are currently taking this course."
   		else
   			@course.destroy
   			flash[:success] = "successfully deleted the Course."

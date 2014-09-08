@@ -89,6 +89,7 @@ describe LearningProcessesController do
 				end
 				it "should be success if activated" do
 					xhr :get, :drop_course, :lp_id => @user.occurences_as_student.first.id
+					xhr :get, :activate_course, :lp_id => @user.occurences_as_student.first.id
 					response.body.should match(/success/i)
 				end
 				it "should be failure if already activated" do
@@ -204,6 +205,7 @@ describe LearningProcessesController do
 						end
 					end
 				end
+
 			end
 		end
 	end

@@ -23,10 +23,6 @@ class LearningProcess < ActiveRecord::Base
 		:Dropped => 1,
 		:Pursuing => 2,
 		:Suggested => 3}
-
-	def self_saver
-		save!
-	end	
 		
 	def status_name
 		STATUSES_REV.key(status)

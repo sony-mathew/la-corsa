@@ -46,5 +46,39 @@ describe LearningProcess do
 		it { should_not be_valid }
 	end
 
+
+	describe "when status is complete" do
+		before { @lp.status = 0 }
+		it { @lp.send("complete?").should be_true }
+	end
+
+
+	describe "when status is dropped" do
+		before { @lp.status = 1 }
+		it { @lp.send("dropped?").should be_true }
+	end
+
+
+	describe "when status is pursuing" do
+		before { @lp.status = 0 }
+		it { @lp.send("pursuing?").should be_false }
+	end
+
+	describe "when status is suggested" do
+		before { @lp.status = 0 }
+		it { @lp.send("suggested?").should be_false }
+	end
+
+
+	describe "when status is suggested" do
+		before { @lp.status = 0 }
+		it { @lp.send("self_student?").should be_true }
+	end
+
+
+	describe "when status is suggested" do
+		before { @lp.status = 0 }
+		it { @lp.send("status_name").should == :Completed }
+	end
 		
 end
