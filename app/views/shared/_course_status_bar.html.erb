@@ -16,7 +16,7 @@
 						<% alert_type = lp.dropped? ? "alert-danger" : "alert-success"  %>
 						<% if lp.complete? and !lp.rated? %>
 							<span class="rating"> 
-							Rating &nbsp; <select name="rating" class="rating-input" data-course="<%= @course.id %>">
+							Rating &nbsp; <select name="rating" class="rating-input" data-lp="<%= lp.id %>">
 												<option>1</option>
 												<option>2</option>
 												<option>3</option>

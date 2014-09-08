@@ -28,30 +28,33 @@ class CoursesController < ApplicationController
 	end
 
 	def edit
-		begin
-			default_course_scope
+		if default_course_scope
 			@study_materials = @course.study_materials
 			render 'new'
-		rescue ActiveRecord::RecordNotFound
+		else
 			flash[:error] = "Could not edit the specified course as you are not it's owner or you provided an invalid Course ID."
-			redirect_to courses_path(current_user)
+			redirect_to courses_path
 		end
 	end
 
 	def show
 		begin
 			@course = Course.find(params[:id])
+			@study_materials = @course.study_materials
 		rescue ActiveRecord::RecordNotFound
 			flash[:error] = "Could not find the course you specified."
 			redirect_to courses_path(current_user)
 		end
-		@study_materials = @course.study_materials
 	end
 
 	def update
 		if params[:course][:material_ids].count > 0
+			begin 
 				@course.update_attributes!(params[:course])
 				flash[:success] = "successfully updated the course."
+			rescue ActiveRecord::RecordInvalid
+				flash[:error] = "Could not update the course."
+			end
 		else
 			flash[:error] = "Sorry, we could not save your course because you haven't added a single study material."
 		end
@@ -85,7 +88,12 @@ class CoursesController < ApplicationController
 		end
 
 		def default_course_scope
-			@course = course_scope.find(params[:id])
+			begin
+				@course = course_scope.find(params[:id])
+			rescue ActiveRecord::RecordNotFound
+				@course = Course.new
+				false
+			end
 		end
 		
 end

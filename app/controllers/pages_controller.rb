@@ -10,8 +10,8 @@ class PagesController < ApplicationController
     end 
   end
 
-  def contact
-  	@title = "Contact"
+  def about
+  	@title = "About"
   end
 
   def set_tab

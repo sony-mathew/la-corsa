@@ -53,11 +53,13 @@ class LearningProcess < ActiveRecord::Base
 	end
 
 	def drop!
+		return false if self.status == STATUSES_REV[:Dropped]
 		self.status = STATUSES_REV[:Dropped]
 		save!
 	end	
 
 	def activate!
+		return false if (self.status == STATUSES_REV[:Pursuing] or self.status == STATUSES_REV[:Suggested])
 		self.status = (mentor == student ? STATUSES_REV[:Pursuing] : STATUSES_REV[:Suggested])
 		save!
 	end
@@ -69,6 +71,7 @@ class LearningProcess < ActiveRecord::Base
 	end
 
 	def finished_last_material!()
+		return false if is_complete
 		self.last_material += 1
 		self.status = STATUSES_REV[:Completed] if is_complete
 		save!
@@ -85,6 +88,7 @@ class LearningProcess < ActiveRecord::Base
 	end
 
 	def rate!
+		return false unless is_complete
 		self.rated = true
 		save!
 	end

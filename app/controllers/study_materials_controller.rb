@@ -23,7 +23,7 @@ class StudyMaterialsController < ApplicationController
 
 	def edit
 		begin
-			@study_material = default_study_scope
+			@study_material = current_user.study_materials.find(params[:id])
 			render 'new'
 		rescue ActiveRecord::RecordNotFound
 			flash[:error] = "Could not edit the specified material as you are not it's owner or you provided an invalid Study Material ID."
@@ -41,27 +41,32 @@ class StudyMaterialsController < ApplicationController
 	end
 
 	def update
-		@study_material = default_study_scope
-		if @study_material.update_attributes(params[:study_material])
-			flash[:success] = "Study Material updated."
+		begin 
+			@study_material = current_user.study_materials.find(params[:id])
+			if @study_material.update_attributes(params[:study_material])
+				flash[:success] = "Study Material updated."
+				redirect_to study_materials_path
+			else
+				flash[:error] = "Could not update the material."
+				render 'new'
+			end
+		rescue ActiveRecord::RecordNotFound
+			flash[:error] = "Could not edit the specified material as you are not it's owner"
 			redirect_to study_materials_path
-		else
-			flash[:error] = "Could not update the material."
-			render 'new'
 		end
 	end
 	
 	def destroy
-		if default_study_scope.courses.exists?
-			flash[:error] = "Could not delete the study material as it is already part of a course."
-		else
-			begin
-  				default_study_scope.destroy
-  				flash[:success] = "Successfully deleted the Study Material."
-  			rescue	ActiveRecord::RecordNotFound
-  				flash[:error] = "Could not delete the specified material."
-  			end
-  		end
+		if default_study_scope
+			if default_study_scope.courses.exists?
+				flash[:error] = "Could not delete the study material as it is already part of a course."
+			else
+	  			default_study_scope.destroy
+	  			flash[:success] = "Successfully deleted the Study Material."
+	  		end
+	  	else
+	  		flash[:success] = "Record not found."
+	  	end
   		redirect_to study_materials_path
 	end
 
@@ -90,7 +95,11 @@ class StudyMaterialsController < ApplicationController
 		end
 
 		def default_study_scope
-			study_scope.find(params[:id])
+			begin
+				study_scope.find(params[:id])
+			rescue ActiveRecord::RecordNotFound
+				false
+			end
 		end
 
 end

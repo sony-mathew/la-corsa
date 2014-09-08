@@ -5,7 +5,7 @@ gem 'rails', '3.2.19'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+#gem 'sqlite3'
 
 
 # Gems used only for assets and not required
@@ -42,7 +42,7 @@ gem 'devise'
 #gem 'activerecord-mysql-adapter’
 
 gem 'mysql2'
-#gem 'simplecov'
+gem 'simplecov'
 
 
 group :development do
@@ -54,7 +54,7 @@ group :test do
 	gem 'rspec', '2.4.0'
 	gem 'webrat', '0.7.1'
 	gem 'spork', '0.8.4'
-	gem 'factory_girl_rails', '1.0'
+	gem 'factory_girl_rails', '4.1.0'
 end
 
 gem 'rails_12factor', group: :production

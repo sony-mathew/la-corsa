@@ -3,17 +3,19 @@ class Course < ActiveRecord::Base
 	belongs_to 	:user
 	has_many	:course_materials, :dependent => :destroy
 	has_many 	:study_materials, :through => :course_materials
-	has_many	:learning_processes
+	has_many	:learning_processes, :dependent => :destroy
 
 	validates :name, :presence => true, :length => { :minimum => 4, :maximum => 70}, :uniqueness 	=> { :case_sensitive => false }
-	validates :description, :presence => true, :length => { :minimum => 20, :maximum => 1000}
+	validates :description, :presence => true, :length => { :minimum => 10, :maximum => 1000}
+	validates :material_ids, :presence => true
 	
 
 	attr_accessible :description, :name, :course_materials_count, :material_ids
 	attr_accessor :material_ids
 
-	before_save :update_count, :unless => [:rating_changed?, :rating_user_count_changed?]
+	default_scope order('created_at DESC')
 
+	before_save :update_count, :unless => [:rating_changed?, :rating_user_count_changed?]
 	after_save :add_study_materials , :unless => [:rating_changed?, :rating_user_count_changed?]
 	after_update :update_study_materials, :unless => [:rating_changed?, :rating_user_count_changed?]
 
@@ -38,9 +40,9 @@ class Course < ActiveRecord::Base
 	end
 
 	def rate!(user_rating)
-		self.rating = ( rating * course.rating_user_count + user_rating )/rating_user_count
+		self.rating = ( rating * rating_user_count + user_rating )/(rating_user_count+1)
 		self.rating_user_count += 1
-		save!
+		save(validate: false)
 	end
 
 	def valid_study_material?(id)

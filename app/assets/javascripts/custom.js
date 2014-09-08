@@ -296,7 +296,7 @@ function suggestCourse(element) {
 
 	emails.forEach(function(mail) {
 		if (IsEmail(mail)) {
-			xmlhttp.open("GET","/learning_processes/suggest?email="+mail+"&course="+courseId, false);
+			xmlhttp.open("GET","/learning_processes/suggest?email="+mail+"&course_id="+courseId, false);
 			xmlhttp.send();
 
 			if ( xmlhttp.responseText == "Success") {
@@ -351,10 +351,10 @@ function IsEmail(email) {
 
 
 function rating() {
-	var course = parseInt($(".rating-input").attr("data-course"));
+	var lpId = parseInt($(".rating-input").attr("data-lp"));
 	var user_rating = parseInt($(".rating-input").val());
 	//return true;
-	xmlhttp.open("GET","/learning_processes/rate_course?rating="+user_rating+"&course="+course,false);
+	xmlhttp.open("GET","/learning_processes/rate_course?rating="+user_rating+"&lp_id="+lpId,false);
 	xmlhttp.send();
 	if ( xmlhttp.responseText == "Success") {
 			msg = "Successfully rated the course.";
@@ -364,6 +364,6 @@ function rating() {
 			msg = "Could not rate the course."+xmlhttp.responseText;
 			dspCourseMsg(msg);
 	}	
-	console.log("in rate course. course: "+ course + " rating : " +user_rating);
+	console.log("in rate course. course: "+ lpId + " rating : " +user_rating);
 	//reload();
 }

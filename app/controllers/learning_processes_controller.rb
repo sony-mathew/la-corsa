@@ -6,7 +6,7 @@ class LearningProcessesController < ApplicationController
 	SCOPES = [:dropped, :completed, :pursuing]
 
 	def index
-		redirect_to root
+		redirect_to root_path
 	end
 
 	def students
@@ -31,21 +31,30 @@ class LearningProcessesController < ApplicationController
 
 	def enroll_me
 		render text: "Error" unless params[:course_id]
-		render text: "Already Enrolled" if current_user.occurences_as_student.where(course_id: params[:course_id]).exists?
-		render text: ( course_scope_default.learning_processes.new.enroll!(current_user) ? "Success" : "Error" )
+		begin 
+			render text:  (current_user.occurences_as_student.where(course_id: params[:course_id]).exists? ? "Already Enrolled" : 
+						(course_scope_default.learning_processes.new.enroll!(current_user) ? "Success" : "Error" ))
+		rescue ActiveRecord::RecordNotFound
+			render text: "Record not found"
+		end
 	end
 
 	def suggest
-		render text: " Email ID not registered " unless user_scope.exists?
-		render text: " Already enrolled " if user_scope.first.occurences_as_student.where(course_id: params[:course]).exists?
-		render text: (course_scope_default.learning_processes.new.suggest_student!(current_user, user.first) ? "Success" : "Error")
+		if user_scope.empty?
+			render text: " Email ID not registered "
+		else
+			if user_scope.first.occurences_as_student.where(course_id: params[:course_id]).exists?
+				render text: " Already enrolled "
+			else
+				render text: (course_scope_default.learning_processes.new.suggest_student!(current_user, user_scope.first) ? "Success" : "Error")
+			end
+		end
 	end
 
 
 	def rate_course
-		@lp = LearningProcess.where(course_id: params[:course], student: current_user.id).first
-		(render text: "Success" if update_rating) unless @lp.rated?
-		render text: "Error"
+		@lp = current_user.occurences_as_student.find_by_id(params[:lp_id])
+		render text: (@lp.rated? ? "Error" :(update_rating ? "Success" : "Error"))
 	end
 
 	private
@@ -56,8 +65,8 @@ class LearningProcessesController < ApplicationController
 		end
 
 		def update_rating
-			@lp.rate!
-			Course.find(params[:course]).rate!( params[:rating].to_f)
+			return false unless @lp.rate!
+			Course.find(@lp.course_id).rate!( params[:rating].to_f)
 		end
 
 		def course_scope
