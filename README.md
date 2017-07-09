@@ -4,7 +4,7 @@
 It's a hobby project. 
 
 ## How did I get the idea?
-This was born out of a simple idea. When I joined Freshdesk, during the intial phases, I was given some technical tasks to do
+When I joined Freshdesk, during the intial phases, I was given some technical tasks to do
 as part of the bootcamp to make me familiar with tech stack of Freshdesk. Each of the task was a problem already described 
 somewhere in the internet and I was given the urls to each problems(emailed). So as I had this bunch of urls to be followed 
 in order to complete the bootcamp, I thought maybe if we had someplace to put these URLs and arrange them and make a 
